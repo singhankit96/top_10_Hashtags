@@ -1,0 +1,62 @@
+import java.io.*;
+// import java.util.regex;
+import java.util.regex.Matcher; 
+import java.util.regex.Pattern; 
+import java.util.*;
+class GFG {
+	public static void main (String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		// input no. of tweets
+		int T = sc.nextInt();
+		sc.nextLine();
+		String[] tweetList = new String[T];
+		for(int i=0; i<T; i++) {
+    		tweetList[i] = sc.nextLine();
+		}
+		TrendingTweet tt = new TrendingTweet(tweetList);
+    	tt.top10();
+	}
+}
+
+class TrendingTweet{
+    String[] tweetList;
+    Map<String,Integer> hashtags;
+    
+    public TrendingTweet(String[] tweetList){
+        this.tweetList = tweetList;
+        hashtags = new HashMap<>();
+    }
+    
+    private void extractHashtag(String tweet){
+        Matcher matcher = Pattern.compile("#\\s*(\\w+)").matcher(tweet);
+        
+        while (matcher.find()) {
+            String currentTag = matcher.group(1);
+          if(hashtags.containsKey(currentTag)){
+              hashtags.put(currentTag,hashtags.get(currentTag) + 1);
+          }
+          else{
+              hashtags.put(currentTag,1);
+          }
+          
+        }
+        
+    }
+    
+    public void top10(){
+        
+        
+        for(String tweet : tweetList){
+        //   System.out.println(tweet);    
+           extractHashtag(tweet);
+        }
+        int i=0;
+        
+        hashtags.entrySet().stream()
+                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue())).limit(10)
+                .forEach(k -> System.out.println(k.getKey()));
+        
+        
+    }
+}
